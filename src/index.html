@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Habit Widget</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="titlebar">
+    <div id="tabs">
+      <button class="tab-btn active" data-tab="habits">Звички</button>
+      <button class="tab-btn" data-tab="calories">Калорії</button>
+      <button class="tab-btn" data-tab="summary">Підсумок</button>
+      <button class="tab-btn icon-btn" data-tab="settings" title="Налаштування">⚙</button>
+    </div>
+    <button id="minimizeBtn" title="Сховати в трей">−</button>
+  </div>
+
+  <div id="content">
+
+    <section id="tab-habits" class="tab-panel active">
+      <h3 class="section-title">Шкідливі звички</h3>
+      <div id="badHabitsList"></div>
+
+      <h3 class="section-title">Корисні звички</h3>
+      <div class="card">
+        <div class="card-title">Бігова доріжка</div>
+        <div class="form-grid">
+          <input id="tmMin" type="number" min="0" placeholder="хв">
+          <input id="tmSpeed" type="number" min="0" step="0.1" placeholder="швидкість, км/год">
+          <input id="tmSteps" type="number" min="0" placeholder="кроки (з доріжки)">
+          <input id="tmKcal" type="number" min="0" placeholder="ккал (з доріжки)">
+        </div>
+        <button id="tmSubmit" class="btn-primary btn-block">Записати</button>
+        <table class="stats-table">
+          <thead><tr><th></th><th>ккал</th><th>км</th><th>хв</th><th>кроки</th></tr></thead>
+          <tbody id="tmStatsBody"></tbody>
+        </table>
+        <div class="recent-title">Останні тренування</div>
+        <div id="tmRecent" class="recent-list"></div>
+      </div>
+
+      <h3 class="section-title">Нейтральні звички</h3>
+      <div class="card">
+        <div class="card-title">Доставка їжі</div>
+        <div class="form-row">
+          <input id="delAmount" type="number" min="0" placeholder="сума за день">
+          <button id="delSubmit" class="btn-primary">Записати</button>
+        </div>
+        <table class="stats-table">
+          <thead><tr><th></th><th>сума</th><th>разів</th></tr></thead>
+          <tbody id="delStatsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="tab-calories" class="tab-panel">
+      <div class="card cal-summary" id="calSummaryCard"></div>
+
+      <div class="card">
+        <div class="card-title">Що з'їв?</div>
+        <textarea id="mealText" rows="3" placeholder="Опиши прийом їжі..."></textarea>
+        <div class="form-row meal-actions">
+          <button id="mealSubmit" class="btn-primary btn-sm">Оцінити через ШІ</button>
+          <button id="manualToggle" class="btn-secondary btn-sm" type="button">Додати вручну</button>
+        </div>
+        <div id="manualForm" class="manual-form">
+          <div class="form-grid">
+            <input id="manKcal" type="number" min="0" placeholder="ккал">
+            <input id="manProtein" type="number" min="0" placeholder="білки, г">
+            <input id="manCarbs" type="number" min="0" placeholder="вуглеводи, г">
+            <input id="manFat" type="number" min="0" placeholder="жири, г">
+          </div>
+          <div class="form-row">
+            <input id="manFiber" type="number" min="0" placeholder="клітковина, г">
+            <label class="checkbox-inline"><input type="checkbox" id="manJunk"> шкідливе</label>
+          </div>
+          <button id="manSubmit" class="btn-primary btn-block">Додати</button>
+        </div>
+        <div id="mealError" class="error-text"></div>
+        <div id="mealEntries" class="meal-entries"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Рекомендація на залишок дня</div>
+        <div id="recoText" class="reco-text"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Шкідлива їжа</div>
+        <div class="habit-counts" id="junkCounts"></div>
+        <div class="habit-sub" id="junkLast"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Історія калорій (14 днів)</div>
+        <div id="calChart" class="bar-chart"></div>
+      </div>
+    </section>
+
+    <section id="tab-summary" class="tab-panel">
+      <div class="card">
+        <div class="card-title">Гроші</div>
+        <div class="money-row">
+          <span>Не «Казик» — зекономлено</span>
+          <span class="money-plus" id="kazikSaved">+0 ₴</span>
+        </div>
+        <div class="money-row">
+          <span>Доставка їжі за <span id="periodLabel">місяць</span></span>
+          <span class="money-minus" id="deliverySpent">-0 ₴</span>
+        </div>
+        <div class="period-toggle">
+          <button class="btn-toggle" data-period="week">Тиждень</button>
+          <button class="btn-toggle active" data-period="month">Місяць</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-settings" class="tab-panel">
+      <div class="card">
+        <label class="field-label">Gemini API ключ</label>
+        <input id="setGeminiKey" type="password" placeholder="AIza...">
+
+        <div class="form-grid-2">
+          <div>
+            <label class="field-label">Стать</label>
+            <select id="setSex">
+              <option value="male">Чоловіча</option>
+              <option value="female">Жіноча</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Вік</label>
+            <input id="setAge" type="number" min="0">
+          </div>
+          <div>
+            <label class="field-label">Зріст, см</label>
+            <input id="setHeight" type="number" min="0">
+          </div>
+          <div>
+            <label class="field-label">Вага, кг</label>
+            <input id="setWeight" type="number" min="0" step="0.1">
+          </div>
+          <div>
+            <label class="field-label">Ціль, кг</label>
+            <input id="setGoalWeight" type="number" min="0" step="0.1">
+          </div>
+          <div>
+            <label class="field-label">Дефіцит, ккал/день</label>
+            <input id="setDeficit" type="number" min="0">
+          </div>
+        </div>
+
+        <label class="field-label">Активність</label>
+        <select id="setActivity">
+          <option value="1.2">Мінімальна (сидяча робота)</option>
+          <option value="1.375">Легка активність</option>
+          <option value="1.55">Помірна активність</option>
+          <option value="1.725">Висока активність</option>
+          <option value="1.9">Дуже висока активність</option>
+        </select>
+
+        <h4 class="subsection-title">Економія на звичках</h4>
+        <label class="field-label">Валюта</label>
+        <input id="setCurrency" type="text" maxlength="3">
+        <div class="form-grid-2">
+          <div>
+            <label class="field-label">Кальян, /день</label>
+            <input id="setKalyanCost" type="number" min="0">
+          </div>
+          <div>
+            <label class="field-label">Казик, /день</label>
+            <input id="setKazikCost" type="number" min="0">
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <label><input type="checkbox" id="setAutoLaunch"> Запускати зі стартом Windows</label>
+        </div>
+        <div class="hotkey-row">
+          <span>Гарячі клавіші відкриття</span>
+          <span class="hotkey-value">Ctrl+Shift+H</span>
+        </div>
+
+        <h4 class="subsection-title">Дані</h4>
+        <div class="data-buttons">
+          <button id="btnOpenFolder" class="btn-secondary">Відкрити папку</button>
+          <button id="btnExport" class="btn-secondary">Експорт</button>
+          <button id="btnImport" class="btn-secondary">Імпорт</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
