@@ -232,7 +232,7 @@ ipcMain.handle('gemini:analyzeMeal', async (e, { apiKey, text }) => {
 
 Опис їжі:
 ${text}`;
-  const json = await geminiRequest(apiKey, 'gemini-2.0-flash', {
+  const json = await geminiRequest(apiKey, 'gemini-2.5-flash', {
     contents: [{ parts: [{ text: prompt }] }]
   });
   return extractJson(extractText(json));
@@ -243,7 +243,7 @@ ipcMain.handle('gemini:recommendation', async (e, { apiKey, context }) => {
   const prompt = `Ти лаконічний фітнес-асистент. На основі даних дай коротку (1-2 речення) рекомендацію українською щодо їжі на залишок дня.
 Дані: ${JSON.stringify(context)}
 Відповідай ЛИШЕ текстом рекомендації, без вступів.`;
-  const json = await geminiRequest(apiKey, 'gemini-2.0-flash', {
+  const json = await geminiRequest(apiKey, 'gemini-2.5-flash', {
     contents: [{ parts: [{ text: prompt }] }]
   });
   return extractText(json).trim();

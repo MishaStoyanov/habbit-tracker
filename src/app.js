@@ -516,10 +516,15 @@ function renderSummary() {
 
   const periodDays = summaryPeriod === 'week' ? 7 : 30;
   const periodLabel = summaryPeriod === 'week' ? 'тиждень' : 'місяць';
-  document.getElementById('periodLabel').textContent = periodLabel;
+  document.querySelectorAll('.periodLabel').forEach(el => el.textContent = periodLabel);
 
   const spent = round(aggregate(DATA.expenses.delivery.entries, periodDays, e => e.amount));
   document.getElementById('deliverySpent').textContent = `-${spent} ${DATA.settings.currency}`;
+
+  document.getElementById('summaryKalyanCount').textContent = countRelapses(DATA.habits.kalyan, periodDays);
+  document.getElementById('summaryKazikCount').textContent = countRelapses(DATA.habits.kazik, periodDays);
+  const deliveryCount = DATA.expenses.delivery.entries.filter(e => withinDays(e.time, periodDays)).length;
+  document.getElementById('summaryDeliveryCount').textContent = deliveryCount;
 }
 
 // ---------- settings ----------
